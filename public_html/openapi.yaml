@@ -1,0 +1,177 @@
+openapi: 3.0.3
+info:
+  title: TestAPI - OpenCart 3.0.3.8
+  description: |-
+    Документация разработанная в рамках выполнения тестового задания агентства Webstripe для запросов.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: http://http://f0716659.xsph.ru/
+tags:
+  - name: login
+    description: API Авторизация  
+    externalDocs:
+      description: test site
+      url: http://f0716659.xsph.ru/index.php?route=api/login
+  - name: category
+    description: Категории 
+    externalDocs:
+      description:  test site
+      url:  http://f0716659.xsph.ru/index.php?route=api/category/categories&api_token=0
+  - name: order
+    description: Заказы
+    externalDocs:
+      description: test site
+      url:  http://f0716659.xsph.ru/index.php?route=api/order/getUserOrders&api_token=0&customer_id=0
+  - name: product
+    description: Продукты
+    externalDocs:
+        description: test site
+        url: http://f0716659.xsph.ru/index.php?route=api/product/products&api_token=0&category_id=0
+paths:
+  /route=api/login:
+    put:
+      tags:
+        - login
+      summary: Авторизация API
+      description: Для взаимодействия с API необходимо получить api_token. Для этого осуществляется авторизация.  
+      operationId: login
+      responses:
+        '200':
+          description: Successful operation. В качестве вариантов успешного ответа выводится уведомление с новым api_token.Однако в случае, если текущий IP не зарегистрирован, выводится уведомление и текущий IP соответственно. В таком случае необходимо авторизоваться в админке, после чего в /система/пользователи/API добавить новый ID для соответствующего  пользователя. В качестве альтернативного варианта можно также же добавить нового пользователя и изменить параметры post запроса (username, key)  
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResult'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LoginResult'
+        '400':
+          description: Invalid 
+        '404':
+          description: Not found
+      
+    
+  /route=api/category/categories&api_token:
+    get:
+      tags:
+        - category
+      summary: Запрос на получение всех категорий
+      description: Один из самых простых запросов для реализации которого реализован category API с единственной функцией, выводящей все категории. 
+      operationId: getCategoties
+      responses:
+        '200':
+          description: Successful operation.В качестве вариантов успешного ответа выводится список всех категорий. 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Not found
+            
+  /product/products/&api_token&category_id:
+    get:
+      tags:
+        - product
+      summary: Запрос на получение всех товаров определенной категории по ID
+      description: Для реализации данной функции реализован product API c единственной функцией выводящей все продукты по ID
+      operationId: getProductsById
+      responses:
+        '200':
+          description: Successful operation.В качестве вариантов успешного ответа выводится список продуктов из определенной категории по ID. Однако в случае введения некоренного ID успешный ответ будет содержать уведомление об отсутствии продуктов. Также как в случае, если ID не указан вовсе. 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Not found
+
+            
+  /order/getUserOrders&api_token&customer_id:
+    get:
+      tags:
+        - order
+      summary: Запрос на получение всех заказов определенного пользователя по ID 
+      description: Для реализации данной функции доработан order API, новая функция позволяет получить все заказы конкретного пользователя по ID 
+      operationId: getOrdersByCustomerId
+      responses:
+        '200':
+          description: Successful operation. В качестве вариантов успешного ответа выводится список всех заказов определенного пользователя по ID. Однако в случае введения некоренного ID успешный ответ будет содержать уведомление об отсутствии заказов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Not found
+      
+             
+
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        sucsess:
+          type: string
+          example: ""
+      xml:
+        name: order
+    
+    Login:
+      type: object
+      properties:
+          username:
+            type: string
+            example: admin
+          key:
+            type: string
+            example: Ja2sD6VrZsDiqEsKTQCwu7TW7oOe8Fh7StmEZWXsk2eRYCJju8CzuLjSdrU4NdvkNj6qXrrAVGl1v2T8doPKtVc23hwiHpiSbTMRJfTftnfkwfSzT3NyEaVAKkfsm0uJ2DeDVyk5pkTTMhqqQ5RT0hrM3Ja3oSAvlLOoWXZwB57mFqK6rCQSM6XHHBLu6FaFOYragoXGZ0Gce2EEzcIMSrMM8T1BpqIJRAplsXfXZBSqjiuzScP7hejJhxerlFO2
+      xml:
+        name: login
+        
+    Category:
+      type: object
+      properties:
+        sucsess:
+          type: string 
+          example: ""
+      xml:
+       name: category
+
+    Product:
+      type: object
+      properties:
+        sucsess:
+          type: string 
+          example: "" 
+      xml:
+          name: product
+         
+  
+    LoginResult:
+      type: object
+      properties:
+          success:
+            type: string
+            example: "API сессия успешно запущена!"
+          api_token:
+            type: string
+            example: 036302ee4fe94352337377a54c
+      xml:
+        name: login
+      
+  
